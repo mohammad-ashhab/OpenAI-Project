@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: question_answer_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      
+  web:
+    build: .
+    command: flask run --host=0.0.0.0
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/question_answer_db
+      - OPENAI_API_KEY=sk-proj-TruD2Monvu7q2ThuewPrT3BlbkFJ48NUH042etK3pRdLmq44
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
